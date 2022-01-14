@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -34,8 +35,8 @@ func main() {
     e.GET("/users", getAllUsers)
     e.POST("/create", createUser)
     // サーバー起動
-    //e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
-    e.Logger.Fatal(e.Start(":8080"))
+    e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+    //e.Logger.Fatal(e.Start(":8080"))
 }
 
 func createUser(c echo.Context) error {
