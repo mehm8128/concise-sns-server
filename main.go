@@ -63,7 +63,7 @@ func post(c echo.Context) error {
 func getAllPosts(c echo.Context) error {
     var posts []*Post
     // userテーブルのレコードを全件取得
-    db.Find(&posts)
+    db.Order("id desc").Find(&posts)
     // 取得したデータをJSONにして返却
     return echo.NewHTTPError(http.StatusOK, posts)
 }
