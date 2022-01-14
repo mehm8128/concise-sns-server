@@ -45,7 +45,6 @@ func main() {
     e.POST("/post",post)
     // サーバー起動
     e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
-    //e.Logger.Fatal(e.Start(":8080"))
 }
 
 func post(c echo.Context) error {
@@ -63,7 +62,7 @@ func post(c echo.Context) error {
 func getAllPosts(c echo.Context) error {
     var posts []*Post
     // userテーブルのレコードを全件取得
-    db.Order("id desc").Find(&posts)
+    db.Find(&posts)
     // 取得したデータをJSONにして返却
     return echo.NewHTTPError(http.StatusOK, posts)
 }
