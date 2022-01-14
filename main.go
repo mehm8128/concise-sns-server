@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -32,28 +31,29 @@ func main() {
     // サーバーのインスタンス作成
     e := echo.New()
     // ルーティング設定
-    e.GET("/contents", getAllContents)
-    e.POST("/create", createContent)
+    e.GET("/users", getAllUsers)
+    e.POST("/create", createUser)
     // サーバー起動
-    e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
-    //e.Logger.Fatal(e.Start(":8080"))
+    //e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+    e.Logger.Fatal(e.Start(":8080"))
 }
 
-func createContent(c echo.Context) error {
+func createUser(c echo.Context) error {
 		data := new(User)
 		err := c.Bind(data)
-    // レコード登録
 		if err != nil {
         return echo.NewHTTPError(http.StatusBadRequest,"error")
 	}
-		db.Create(&User{Name:data.Name})
+    // レコード登録
+    var user = User{Name:data.Name}
+		db.Create(&user)
     return c.JSON(http.StatusOK, data)
 }
 
-func getAllContents(c echo.Context) error {
-    var user User
+func getAllUsers(c echo.Context) error {
+    var users []*User
     // userテーブルのレコードを全件取得
-    db.Find(&user)
+    db.Find(&users)
     // 取得したデータをJSONにして返却
-    return c.JSON(http.StatusOK, user)
+    return echo.NewHTTPError(http.StatusOK, users)
 }
