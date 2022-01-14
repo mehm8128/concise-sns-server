@@ -10,9 +10,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type User struct {
+type Post struct {
   gorm.Model
   Name string `json:"Name"`
+  Content string `json:"Content"`
 }
 
 // DBのインスタンスをグローバル変数に格納
@@ -29,9 +30,10 @@ func main() {
     }
     // サーバーが終了したらDB接続も終了する
     defer db.Close()
-		db.AutoMigrate(&User{})
+		db.AutoMigrate(&Post{})
     // サーバーのインスタンス作成
     e := echo.New()
+    //CORSエラー回避
     e.Use(middleware.Logger())
     e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:3000"},
@@ -39,29 +41,29 @@ func main() {
 		AllowCredentials: true,
 	}))
     // ルーティング設定
-    e.GET("/users", getAllUsers)
-    e.POST("/create", createUser)
+    e.GET("/get", getAllPosts)
+    e.POST("/post",post)
     // サーバー起動
     e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
     //e.Logger.Fatal(e.Start(":8080"))
 }
 
-func createUser(c echo.Context) error {
-		data := new(User)
+func post(c echo.Context) error {
+		data := new(Post)
 		err := c.Bind(data)
 		if err != nil {
         return echo.NewHTTPError(http.StatusBadRequest,"error")
 	}
     // レコード登録
-    var user = User{Name:data.Name}
-		db.Create(&user)
+    var post = Post{Name:data.Name,Content:data.Content}
+		db.Create(&post)
     return c.JSON(http.StatusOK, data)
 }
 
-func getAllUsers(c echo.Context) error {
-    var users []*User
+func getAllPosts(c echo.Context) error {
+    var posts []*Post
     // userテーブルのレコードを全件取得
-    db.Find(&users)
+    db.Find(&posts)
     // 取得したデータをJSONにして返却
-    return echo.NewHTTPError(http.StatusOK, users)
+    return echo.NewHTTPError(http.StatusOK, posts)
 }
