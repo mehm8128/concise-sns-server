@@ -5,8 +5,9 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo"
+	"github.com/lib/pq"
 )
 
 type User struct {
@@ -22,7 +23,13 @@ var (
 func main() {
     // DB接続処理
     var err error
-    db, err = gorm.Open("sqlite3", "/tmp/gorm.db")
+    url := os.Getenv("DATABASE_URL")
+    connection, err := pq.ParseURL(url)
+    if err != nil {
+      panic(err.Error())
+    }
+    connection += " sslmode=require"
+    db, err = gorm.Open("postgres", "connection")
     if err != nil {
         panic("failed to connect database")
     }
