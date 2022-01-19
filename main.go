@@ -6,6 +6,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -22,6 +23,8 @@ var (
 )
 
 func main() {
+    //環境変数読み込み
+    godotenv.Load(".env")
     // DB接続処理
     var err error
     db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL") )
@@ -62,7 +65,7 @@ func post(c echo.Context) error {
 func getAllPosts(c echo.Context) error {
     var posts []*Post
     // userテーブルのレコードを全件取得
-    db.Find(&posts)
+    db.Order("id desc").Find(&posts)
     // 取得したデータをJSONにして返却
     return echo.NewHTTPError(http.StatusOK, posts)
 }
