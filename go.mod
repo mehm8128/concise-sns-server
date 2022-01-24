@@ -1,4 +1,4 @@
-module github.com/mehm8128/herokuPractice
+module github.com/mehm8128/concise-sns-server
 
 go 1.16
 
