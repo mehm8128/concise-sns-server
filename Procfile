@@ -1,1 +1,1 @@
-web: bin/herokuPractice
+web: bin/concise-sns-server
