@@ -10,15 +10,15 @@ import (
 )
 
 type Post struct {
-  gorm.Model
-  Name string `json:"Name"`
-  Content string `json:"Content"`
+	gorm.Model
+	Name    string `json:"Name"`
+	Content string `json:"Content"`
 }
 
 func main() {
-  err := model.InitDB()
+	err := model.InitDB()
 	if err != nil {
 		panic(fmt.Errorf("DB Error: %w", err))
 	}
-  router.SetRouting()
+	router.SetRouting()
 }
