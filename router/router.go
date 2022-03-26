@@ -1,10 +1,9 @@
 package router
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mehm8128/concise-sns-server/model"
@@ -13,7 +12,8 @@ import (
 func SetRouting() {
 	// サーバーのインスタンス作成
 	e := echo.New()
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+	port := os.Getenv("PORT")
+	fmt.Println(port)
 	//CORSエラー回避
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -29,5 +29,5 @@ func SetRouting() {
 	e.POST("/post", model.PostContent)
 	e.POST("/delete", model.DeletePost)
 	// サーバー起動
-	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+	e.Logger.Fatal(e.Start(":" + port))
 }
